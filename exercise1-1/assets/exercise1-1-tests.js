@@ -77,7 +77,7 @@ async function runTests(canvas) {
         if (alwaysTwo && stars.length > 0) {
             TestResults.addPass("<code>star()</code> is always called with two arguments.");
             if (testShapesMatchWithoutOrder(expectedShapes, actualShapes, false)) {
-                TestResults.addPass("The stars are drawn around the coorindates passed to <code>star()</code>.");
+                TestResults.addPass("The stars are drawn around the coordinates passed to <code>star()</code>.");
             } else {
                 TestResults.addFail("The stars do not appear to be drawn around the coordinates passed to <code>star()</code>. Or, <code>star()</code> is not called correctly.");
             }
