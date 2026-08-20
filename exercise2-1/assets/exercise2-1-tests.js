@@ -1,4 +1,4 @@
-import { TestResults, getShapes, RECT, CIRCLE, coloursMatch, advanceToFrame, getFunctionContents, testSettingIsCalled } from "../../lib/test-utils.js";
+import { TestResults, getShapes, SHAPE, coloursMatch, advanceToFrame, getFunctionContents, testSettingIsCalled } from "https://cdn.jsdelivr.net/gh/Supportive-IDE/p5js-testing-demo@latest/p5jsTestingLibrary.js";
 
 /**
  * A hacky solution to wait for p5js to load the canvas. Include in all exercise test files.
@@ -11,7 +11,7 @@ function waitForP5() {
     }
 }
 
-function checkShapes() {
+async function checkShapes() {
     let xLeftTested = false;
     let xRightTested = false;
     let yTopTested = false;
@@ -19,7 +19,7 @@ function checkShapes() {
     let bothInTested = false;
     while ((!xLeftTested || !xRightTested || !yTopTested || !yBottomTested || !bothInTested) && frameCount < 1000) {
         const shapes = getShapes();
-        if (shapes.length === 2 && shapes[0].type === RECT && shapes[1].type === CIRCLE) {
+        if (shapes.length === 2 && shapes[0].type === SHAPE.RECT && shapes[1].type === SHAPE.CIRCLE) {
             const userRect = shapes[0];
             const userCircle = shapes[1];
             if (!xLeftTested && userCircle.x < userRect.x && userCircle.y >= userRect.y && userCircle.y <= userRect.y + userRect.h) {
@@ -66,7 +66,7 @@ function checkShapes() {
             TestResults.addFail(`Expected a rect and a circle. Found ${shapes.length} shapes.${shapes.length > 0 ? " Shapes: " + shapes.map(s => s.type).join(",") :""}`);
             break;
         }
-        advanceToFrame(frameCount+1);
+        await advanceToFrame(frameCount+1);
     }
 }
 
@@ -108,7 +108,7 @@ async function runTests(canvas) {
     } else {
         TestResults.addFail("The sketch does not contain a function called <code>isOutOfBounds</code>.");
     }
-    checkShapes();
+    await checkShapes();
     TestResults.display(resultsDiv);
 }
 

@@ -1,4 +1,4 @@
-import { TestResults, TestTriangle, advanceToFrame, canvasStatus, getShapes, testShapesMatchWithoutOrder } from "../../lib/test-utils.js";
+import { TestResults, TestTriangle, advanceToFrame, canvasStatus, getShapes, testShapesMatchWithoutOrder } from "https://cdn.jsdelivr.net/gh/Supportive-IDE/p5js-testing-demo@latest/p5jsTestingLibrary.js";
 
 /**
  * A hacky solution to wait for p5js to load the canvas. Include in all exercise test files.
@@ -11,35 +11,36 @@ function waitForP5() {
     }
 }
 
-// star call tracking
-let stars = [];
-
-// star mock
-try {
-    const user_star = star;
-    window.star = function star(...args) {
-        console.log("star", args);
-        try {
-            const returnValue = user_star.apply(this, args);
-            stars.push([...args]);
-            return returnValue;
-        }
-        catch (e) { throw e; }
-    }
-    for (const prop in user_star) {
-        if (user_star.hasOwnProperty(prop)) {
-            window.star[prop] = user_star[prop];
-        }
-    }
-}
-catch (e) {
-    
-}
 
 async function runTests(canvas) {
     canvas.style.pointerEvents = "none";
     const resultsDiv = document.getElementById("results");
     if (window.hasOwnProperty("star") && typeof star === "function") {
+        // star call tracking
+        let stars = [];
+
+        // star mock
+        try {
+            const user_star = star;
+            window.star = function star(...args) {
+                console.log("star", args);
+                try {
+                    const returnValue = user_star.apply(this, args);
+                    stars.push([...args]);
+                    return returnValue;
+                }
+                catch (e) { throw e; }
+            }
+            for (const prop in user_star) {
+                if (user_star.hasOwnProperty(prop)) {
+                    window.star[prop] = user_star[prop];
+                }
+            }
+        }
+        catch (e) {
+            
+        }
+
         TestResults.addPass("The sketch contains a function called <code>star</code>.");
         // Check it's called three times
         const stars1 = [...stars];
@@ -50,7 +51,7 @@ async function runTests(canvas) {
         } else {
             TestResults.addFail(`<code>random()</code> should be called 6 times. It was called ${canvasStatus.randomCalls.length} times.`);
         }
-        advanceToFrame(frameCount+1);
+        await advanceToFrame(frameCount+1);
         if (stars.length === 3) {
             TestResults.addPass("<code>star()</code> is called three times per frame.");
         } else {

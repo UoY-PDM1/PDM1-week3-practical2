@@ -1,4 +1,4 @@
-import { TestResults, testSettingIsCalled, checkCanvasSize, advanceToFrame, getShapes } from "../../lib/test-utils.js";
+import { TestResults, testSettingIsCalled, checkCanvasSize, advanceToFrame, getShapes, simulateMousePosition } from "https://cdn.jsdelivr.net/gh/Supportive-IDE/p5js-testing-demo@latest/p5jsTestingLibrary.js";
 
 /**
  * A hacky solution to wait for p5js to load the canvas. Include in all exercise test files.
@@ -11,10 +11,11 @@ function waitForP5() {
     }
 }
 
-function checkShapesAtCoords(mX, mY) {
-    mouseX = mX;
-    mouseY = mY;
-    advanceToFrame(frameCount + 1);
+async function checkShapesAtCoords(mX, mY) {
+    // mouseX = mX;
+    // mouseY = mY;
+    simulateMousePosition(mX, mY);
+    await advanceToFrame(frameCount + 1);
     const shapes = getShapes();
     if (shapes.length !== 4) {
         TestResults.addFail(`Expected four circles when the mouse is at ${mX}, ${mY}. Found ${shapes.length} shapes.`);
@@ -63,12 +64,12 @@ function checkShapesAtCoords(mX, mY) {
     }
 }
 
-function checkShapes() {
-    checkShapesAtCoords(0, 0);
-    checkShapesAtCoords(width / 2 - 50, 10);
-    checkShapesAtCoords(10, height / 2 - 50);
-    checkShapesAtCoords(width / 2 + 50, 10);
-    checkShapesAtCoords(10, height / 2 + 50);
+async function checkShapes() {
+    await checkShapesAtCoords(0, 0);
+    await checkShapesAtCoords(width / 2 - 50, 10);
+    await checkShapesAtCoords(10, height / 2 - 50);
+    await checkShapesAtCoords(width / 2 + 50, 10);
+    await checkShapesAtCoords(10, height / 2 + 50);
 }
 
 async function runTests(canvas) {
@@ -103,7 +104,7 @@ async function runTests(canvas) {
     } else {
         TestResults.addFail("The sketch does not contain a function called <code>mirrorCoordinate</code>.");
     }
-    checkShapes();
+    await checkShapes();
     TestResults.display(resultsDiv);
 }
 

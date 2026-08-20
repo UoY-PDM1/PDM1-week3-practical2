@@ -1,4 +1,4 @@
-import { TestResults, checkCanvasSize, getShapes, testSettingIsCalled, BACKGROUND, canvasStatus } from "../../lib/test-utils.js";
+import { TestResults, checkCanvasSize, getShapes, testSettingIsCalled, BACKGROUND, canvasStatus, simulateMousePosition } from "https://cdn.jsdelivr.net/gh/Supportive-IDE/p5js-testing-demo@latest/p5jsTestingLibrary.js";
 
 /**
  * A hacky solution to wait for p5js to load the canvas. Include in all exercise test files.
@@ -13,27 +13,6 @@ function waitForP5() {
 
 let drawTriangleCount = 0;
 
-// star mock
-try {
-    const user_drawTriangle = drawTriangle;
-    window.drawTriangle = function drawTriangle(...args) {
-        console.log("drawTriangle", args);
-        try {
-            const returnValue = user_drawTriangle.apply(this, args);
-            drawTriangleCount++;
-            return returnValue;
-        }
-        catch (e) { throw e; }
-    }
-    for (const prop in user_drawTriangle) {
-        if (user_drawTriangle.hasOwnProperty(prop)) {
-            window.drawTriangle[prop] = user_drawTriangle[prop];
-        }
-    }
-}
-catch (e) {
-    
-}
 
 function matchFillToRandom(fillCol, randomCalls) {
     const r = red(fillCol);
@@ -80,20 +59,42 @@ async function runTests(canvas) {
     canvas.style.pointerEvents = "none";
     const resultsDiv = document.getElementById("results");
     checkCanvasSize(600, 600);
-    if (testSettingIsCalled(BACKGROUND, false, true)) {
+    if (testSettingIsCalled(BACKGROUND.re, false, true)) {
         TestResults.addFail("<code>background()</code> should not be called in <code>draw()</code> for this exercise.");
     } else {
         TestResults.addPass("<code>background()</code> is not called in <code>draw()</code>.");
     }
     if (window.hasOwnProperty("drawTriangle") && typeof drawTriangle === "function") {
+        // drawTriangle mock
+        try {
+            const user_drawTriangle = drawTriangle;
+            window.drawTriangle = function drawTriangle(...args) {
+                console.log("drawTriangle", args);
+                try {
+                    const returnValue = user_drawTriangle.apply(this, args);
+                    drawTriangleCount++;
+                    return returnValue;
+                }
+                catch (e) { throw e; }
+            }
+            for (const prop in user_drawTriangle) {
+                if (user_drawTriangle.hasOwnProperty(prop)) {
+                    window.drawTriangle[prop] = user_drawTriangle[prop];
+                }
+            }
+        }
+        catch (e) {
+            
+        }
         TestResults.addPass("The sketch contains a function called <code>drawTriangle</code>.");
-        mouseX = 173;
-        mouseY = 356;
+        // mouseX = 173;
+        // mouseY = 356;
+        simulateMousePosition(173, 356);
         drawTriangle();
         const firstShapes = getShapes();
         const firstFill = canvasStatus.fillColour;
         matchFillToRandom(firstFill, canvasStatus.randomCalls);
-        checkTrianglePosition(firstShapes, mouseX, mouseY);
+        checkTrianglePosition(firstShapes, window.mock_mouseX, window.mock_mouseY);
         const clickedFunc = window.hasOwnProperty("mouseClicked");
         const pressedFunc = window.hasOwnProperty("mousePressed");
         const releasedFunc = window.hasOwnProperty("mouseReleased");
