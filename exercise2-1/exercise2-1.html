@@ -28,9 +28,18 @@
             <h3>Part 1</h3>
             <p>Define a function called <code>isOutOfBounds()</code> that takes three arguments: <code>coordinate</code>, <code>minVal</code>, 
                 and <code>maxVal</code>. <code>coordinate</code> will be the coordinate to check (x or y), <code>minVal</code> will be 
-                the lowest acceptable value of the coordinate. <code>maxVal</code> will be the highest acceptable value 
-                of the coordinate. The function should return <code>true</code> if the coordinate is out of bounds and <code>false</code> if 
+                the lowest value of the coordinate that would be considered in bounds. <code>maxVal</code> will be the highest value 
+                of the coordinate that would be considered in bounds. The function should return <code>true</code> if the coordinate is out of bounds and <code>false</code> if 
                 the coordinate is in bounds.</p>
+            <p>Here is an example: Imagine a rectangle with a left edge at 100 pixels and a right edge at 300 pixels. A value of x between 100 and 300 would be considered in bounds, 
+                while a value of x less than 100 or greater than 300 would be out of bounds. Here are some completed function calls for this scenario:
+            </p>
+            <pre>
+// When the coordinate is 125, the minVal is 100, and the maxVal is 300:
+isOutOfBounds(125, 100, 300); // would return false, meaning 125 is NOT out of bounds.
+// When the coordinate is 350, the minVal is 100, and the maxVali is 300:
+isOutOfBounds(350, 100, 300); // would return true, meaning 350 IS out of bounds.
+            </pre>
             <p>Replace the boolean expressions on lines 13 and 16 with calls to <code>isOutOfBounds()</code>. The same function should work for 
                 both boolean expressions!</p>
             <h3>Part 2</h3>
